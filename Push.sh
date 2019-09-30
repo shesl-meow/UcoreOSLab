@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+./GnrSummary.sh
+if ! git diff-index --quiet HEAD ./SUMMARY.md; then
+    echo "I have generated 'SUMMARY.md' for you."
+fi
+
 if ! git diff-index --quiet HEAD --; then
     echo "You have uncommit change."
     exit 1;
