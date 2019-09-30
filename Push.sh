@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./GnrSummary.sh
+sync ./GnrSummary.sh
 if ! git diff-index --quiet HEAD ./SUMMARY.md; then
     echo "I have generated 'SUMMARY.md' for you."
 fi
