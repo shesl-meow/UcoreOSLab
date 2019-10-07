@@ -311,8 +311,8 @@ print_stackframe(void) {
               cprintf("0x%08x  ",*((uint32_t *)ebp+2+j));
           }
           print_debuginfo(eip - 1);
-          ebp=*(uint32_t *)ebp;
           eip=*((uint32_t *)ebp+1);
+          ebp=*(uint32_t *)ebp;
       }
 }
 
