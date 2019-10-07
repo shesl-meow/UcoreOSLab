@@ -12,6 +12,7 @@ check_readme () {
 	# Parameter
 	# 	p1: folder name.
 	find $1 -type d -not -path "*/.git*" \
+		-and -not -path "*/labcodes*" \
 		-and -not -path "*/_book*" \
 		-and -not -path "*/node_modules*" | while read f;
 	do

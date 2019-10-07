@@ -30,6 +30,7 @@ gnr_summary () {
 rm SUMMARY.md && touch SUMMARY.md
 find . -maxdepth 1 -type d -not -name "." \
 	-and -not -name ".git" \
+	-and -not -name "labcodes" \
 	-and -not -name "node_modules" \
 	-and -not -name "_book" | sort -n | while read recur;
 do
