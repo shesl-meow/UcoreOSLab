@@ -22,5 +22,7 @@ git push origin $BRANCH_NAME
 git push -f kancloud $BRANCH_NAME
 
 rm -rf ../Note/学校课程/操作系统/HOMEWORK/*
-find . -type d -and -not -name ".*" -maxdepth 1 \
-    -exec cp -r {} ../Note/学校课程/操作系统/HOMEWORK/ \;
+find . -type d \
+    -and -not -name ".*" \
+    -and -not -name "labcodes" \
+    -maxdepth 1 -exec cp -r {} ../Note/学校课程/操作系统/HOMEWORK/ \;
