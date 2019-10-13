@@ -3,4 +3,6 @@
 	* [exe2](./lab1/exe2.md)
 	* [exe3](./lab1/exe3.md)
 	* [exe4](./lab1/exe4.md)
+	* [exe5](./lab1/exe5.md)
 	* [exe6](./lab1/exe6.md)
+	* [personal_summary](./lab1/personal_summary.md)
