@@ -6,3 +6,5 @@
 	* [exe5](./lab1/exe5.md)
 	* [exe6](./lab1/exe6.md)
 	* [personal_summary](./lab1/personal_summary.md)
+* [lab2](./lab2/README.md)
+	* [exe0](./lab2/exe0.md)
