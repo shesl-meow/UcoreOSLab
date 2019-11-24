@@ -8,3 +8,4 @@
 	* [personal_summary](./lab1/personal_summary.md)
 * [lab2](./lab2/README.md)
 	* [exe0](./lab2/exe0.md)
+	* [exe2](./lab2/exe2.md)
