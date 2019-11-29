@@ -11,3 +11,5 @@
 	* [exe2](./lab2/exe2.md)
 * [lab3](./lab3/README.md)
 	* [exe0](./lab3/exe0.md)
+	* [exe1](./lab3/exe1.md)
+	* [exe2](./lab3/exe2.md)

@@ -14,6 +14,3 @@
    $ git apply lab3/exe0.patch
    ```
 
-   
-
-3. 
