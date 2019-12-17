@@ -86,22 +86,22 @@ static struct proc_struct *
 alloc_proc(void) {
     struct proc_struct *proc = kmalloc(sizeof(struct proc_struct));
     if (proc != NULL) {
-    //LAB4:EXERCISE1 YOUR CODE
-    /*
-     * below fields in proc_struct need to be initialized
-     *       enum proc_state state;                      // Process state
-     *       int pid;                                    // Process ID
-     *       int runs;                                   // the running times of Proces
-     *       uintptr_t kstack;                           // Process kernel stack
-     *       volatile bool need_resched;                 // bool value: need to be rescheduled to release CPU?
-     *       struct proc_struct *parent;                 // the parent process
-     *       struct mm_struct *mm;                       // Process's memory management field
-     *       struct context context;                     // Switch here to run process
-     *       struct trapframe *tf;                       // Trap frame for current interrupt
-     *       uintptr_t cr3;                              // CR3 register: the base addr of Page Directroy Table(PDT)
-     *       uint32_t flags;                             // Process flag
-     *       char name[PROC_NAME_LEN + 1];               // Process name
-     */
+        proc->state = PROC_UNINIT;                      // Process state
+        proc->pid = -1;                                 // Process ID
+        proc->runs = 0;                                 // the running times of Proces
+        proc->kstack = 0;                               // Process kernel stack
+        proc->need_resched = 0;                         // bool value: need to be rescheduled to release CPU?
+        proc->parent = NULL;                            // the parent process
+        proc->mm = NULL;                                // Process's memory management field
+        memset(
+            &(proc->context),                           // Switch here to run process
+            0,
+            sizeof(struct context)
+        );
+        proc->tf = NULL;                                // Trap frame for current interrupt
+        proc->cr3 = boot_cr3;                           // CR3 register: the base addr of Page Directroy Table(PDT)
+        proc->flags = 0;                                // Process flag
+        memset(proc->name, 0, PROC_NAME_LEN);           // Process name
     }
     return proc;
 }
