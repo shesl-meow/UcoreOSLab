@@ -400,14 +400,14 @@ do_pgfault(struct mm_struct *mm, uint32_t error_code, uintptr_t addr) {
 #endif
     ptep = get_pte(mm->pgdir, addr, 1);
     if (ptep  == NULL) {
-        cprintf("get_pte in do_pgfault failed\n");
+       
         goto failed;
     }
     
     if (*ptep == 0) { 
         struct Page* page=pgdir_alloc_page(mm->pgdir, addr, perm) ;
         if (page == NULL) {
-            cprintf("pgdir_alloc_page in do_pgfault failed\n");
+            
             goto failed;
         }
     } else {
