@@ -361,9 +361,7 @@ do_pgfault(struct mm_struct *mm, uint32_t error_code, uintptr_t addr) {
     *   mm->pgdir : the PDT of these vma
     *
     */
-     
 #if 0
-
     /*LAB3 EXERCISE 1: YOUR CODE*/
     ptep = ???              //(1) try to find a pte, if pte's PT(Page Table) isn't existed, then create a PT.
     if (*ptep == 0) {
@@ -395,34 +393,36 @@ do_pgfault(struct mm_struct *mm, uint32_t error_code, uintptr_t addr) {
         }
    }
 #endif
-    ptep = get_pte(mm->pgdir, addr, 1);
-    if (ptep  == NULL) {
+    if((ptep = get_pte(mm->pgdir, addr, 1)) == NULL) {
         cprintf("get_pte in do_pgfault failed\n");
         goto failed;
     }
-    
-    if (*ptep == 0) { 
-        struct Page* page=pgdir_alloc_page(mm->pgdir, addr, perm) ;
-        if (page == NULL) {
+    // 页表项为 0 表示没有与物理页面建立映射关系，pgdir_alloc_page 函数分配了一个页帧
+    if(*ptep == 0) {
+        if (pgdir_alloc_page(mm->pgdir, addr, perm) == NULL) {
             cprintf("pgdir_alloc_page in do_pgfault failed\n");
             goto failed;
         }
-    } else {
+    }
+    // 要处理的另一种情况，就是页存在于 swap 分区
+    else {
         if(swap_init_ok) {
-            struct Page *page=NULL;
-            if ((ret = swap_in(mm, addr, &page)) != 0) {    // (1）According to the mm AND addr, try to load the content of right disk page
-                                                            //    into the memory which page managed.
+            struct Page *page = NULL;
+            // 换入操作
+            if ((ret = swap_in(mm, addr, &page)) != 0) {
+                cprintf("swap_in in do_pgfault failed\n");
                 goto failed;
             }
-            page_insert(mm->pgdir, page, addr, perm);       // (2) According to the mm, addr AND page, setup the map of phy addr <---> logical addr
-            swap_map_swappable(mm, addr, page, 1);          // (3) make the page swappable.
-            page->pra_vaddr = addr;
-        } else {
+            page_insert(mm->pgdir, page, addr, perm); // 设置页表项
+            swap_map_swappable(mm, addr, page, 1);    // 设置页可交换
+            page->pra_vaddr = addr;                   // 设置页对应的虚拟地址
+        }
+        else {
             cprintf("no swap_init_ok but ptep is %x, failed\n",*ptep);
             goto failed;
         }
     }
-   ret = 0;
+    ret = 0;
 failed:
     return ret;
 }
