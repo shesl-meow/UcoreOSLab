@@ -93,11 +93,7 @@ alloc_proc(void) {
         proc->need_resched = 0;                         // bool value: need to be rescheduled to release CPU?
         proc->parent = NULL;                            // the parent process
         proc->mm = NULL;                                // Process's memory management field
-        memset(
-            &(proc->context),                           // Switch here to run process
-            0,
-            sizeof(struct context)
-        );
+        memset(&(proc->context), 0, sizeof(struct context)); // Switch here to run process
         proc->tf = NULL;                                // Trap frame for current interrupt
         proc->cr3 = boot_cr3;                           // CR3 register: the base addr of Page Directroy Table(PDT)
         proc->flags = 0;                                // Process flag
