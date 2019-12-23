@@ -49,20 +49,15 @@ idt_init(void) {
       *     Notice: the argument of lidt is idt_pd. try to find it!
       */
     extern uintptr_t __vectors[];
-    int i;
-    for(i = 0; i < sizeof(idt) / sizeof(struct gatedesc); i++ ) {
-        if(i <= 31){
-            // 前 32 个设置为 exception/traps
-            SETGATE(idt[i], 1, GD_KTEXT, __vectors[i], DPL_KERNEL);
-        }else {
-            // 后面的设置为 interrupt
+    for (int i = 0; i < 256; i++) {
+        if (i < IRQ_OFFSET) { 
+            SETGATE(idt[i], 1, GD_KTEXT, __vectors[i], DPL_KERNEL); 
+        } else if (i == T_SYSCALL) { 
+            SETGATE(idt[i], 1, GD_KTEXT, __vectors[i], DPL_USER);
+        } else { 
             SETGATE(idt[i], 0, GD_KTEXT, __vectors[i], DPL_KERNEL);
         }
     }
-    // 从trap.h 看到 系统调用对应是 0x80，系统调用应该对应用户态的软件权限
-    SETGATE(idt[T_SYSCALL], 0, GD_KTEXT, __vectors[i], DPL_USER);
-    // 从用户态到内核态的trap需要设置为3
-    SETGATE(idt[T_SWITCH_TOK], 1, GD_KTEXT, __vectors[T_SWITCH_TOK], DPL_USER);
     lidt(&idt_pd);
 }
 
@@ -202,11 +197,7 @@ trap_dispatch(struct trapframe *tf) {
          * (2) Every TICK_NUM cycle, you can print some info using a funciton, such as print_ticks().
          * (3) Too Simple? Yes, I think so!
          */
-        ticks++;
-        if( ticks == TICK_NUM ) {
-            ticks = 0;
-            print_ticks();
-        }
+        if(++ticks % TICK_NUM == 0) print_ticks();
         break;
     case IRQ_OFFSET + IRQ_COM1:
         c = cons_getc();
@@ -218,15 +209,8 @@ trap_dispatch(struct trapframe *tf) {
         break;
     //LAB1 CHALLENGE 1 : YOUR CODE you should modify below codes.
     case T_SWITCH_TOU:
-        cprintf("switching to user\n");
-        tf->tf_cs = USER_CS;
-        tf->tf_ds = tf->tf_es = USER_DS;
-        tf->tf_eflags |= FL_IOPL_MASK;
-        break;
     case T_SWITCH_TOK:
-        tf->tf_cs = KERNEL_CS;
-        tf->tf_ds = tf->tf_es = tf->tf_ss = KERNEL_DS;
-        tf->tf_eflags &= ~FL_IOPL_MASK;
+        panic("T_SWITCH_** ??\n");
         break;
     case IRQ_OFFSET + IRQ_IDE1:
     case IRQ_OFFSET + IRQ_IDE2:
