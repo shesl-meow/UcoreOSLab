@@ -488,7 +488,7 @@ copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end, bool share) {
                 return -E_NO_MEM;
             }
         uint32_t perm = (*ptep & PTE_USER);
-        //get page from ptep
+        // get page from ptep
         struct Page *page = pte2page(*ptep);
         // alloc a page for process B
         struct Page *npage=alloc_page();
@@ -509,6 +509,10 @@ copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end, bool share) {
          * (3) memory copy from src_kvaddr to dst_kvaddr, size is PGSIZE
          * (4) build the map of phy addr of  nage with the linear addr start
          */
+        void* src_kvaddr = page2kva(page);          // (1) find src_kvaddr: the kernel virtual address of page
+        void* dst_kvaddr = page2kva(npage);         // (2) find dst_kvaddr: the kernel virtual address of npage
+        memcpy(dst_kvaddr, src_kvaddr, PGSIZE);     // (3) memory copy from src_kvaddr to dst_kvaddr, size is PGSIZE
+        ret = page_insert(to, npage, start, perm);  // (4) build the map of phy addr of  nage with the linear addr start
         assert(ret == 0);
         }
         start += PGSIZE;
