@@ -103,6 +103,10 @@ alloc_proc(void) {
         proc->cr3 = boot_cr3;                           // CR3 register: the base addr of Page Directroy Table(PDT)
         proc->flags = 0;                                // Process flag
         memset(proc->name, 0, PROC_NAME_LEN);           // Process name
+        proc->wait_state = 0; 
+        proc->cptr = NULL;
+        proc->optr = NULL;
+        proc->yptr = NULL;
      //LAB5 YOUR CODE : (update LAB4 steps)
     /*
      * below fields(add in LAB5) in proc_struct need to be initialized	
@@ -400,7 +404,7 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
     }
 
     proc->parent = current;
-
+    assert(current->wait_state == 0); 
     if (setup_kstack(proc) != 0) {
         goto bad_fork_cleanup_proc;
     }
@@ -414,8 +418,9 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
     {
         proc->pid = get_pid();
         hash_proc(proc);
-        list_add(&proc_list, &(proc->list_link));
-        nr_process +=1;
+       // list_add(&proc_list, &(proc->list_link));
+        set_links(proc); 
+        //nr_process +=1;
     }
     local_intr_restore(intr_flag);
 
